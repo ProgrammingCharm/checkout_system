@@ -1,0 +1,22 @@
+<!DOCTYPE>
+<html>
+<head>
+	<title> Register an Item </title>
+</head>
+<body>
+	<div>
+		<a href="{{ url_for('view_items_page') }}">View Items</a>
+		<a href="{{ url_for('view_register_item_page') }}">Register an Item</a>
+		<a href="{{ url_for('about_page') }}">About</a>
+	</div>
+	<h1> Register an Item </h1>
+	<form method="POST" action="/add_item_manually">
+		<label for="item_name">Item Name:</label>
+		<input type="text" id="item_name" name="item_name">
+		<label for="item_description">Item Description:</label>
+		<input type="text" id="item_description" name="item_description">
+		<input type="submit" value="Add Item Name">
+	</form>
+</body>
+</html>
+
