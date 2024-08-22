@@ -24,30 +24,32 @@
 <body> 
 	<div> 
 		<a href="{{ url_for('view_items_page') }}">View Items</a>
-		<a href="{{ url_for('view_register_item_page') }}">Register Item</a>
+		<a href="{{ url_for('view_register_item_page') }}">Register Items</a>
 		<a href="{{ url_for('about_page') }}">About</a>
 	</div>
 	<div>
-	<h1> Available Items </h1>
-	{% if available_items %}
+	<h1> Items </h1>
+	{% if items %}
 	<form method="POST" action="/">
 		<table>
 			<thead>
 				<th>Item</th>
 				<th>Description</th>
+				<th>Availability</th>
 			</thead>
 			<tbody>
-				{% for available_item in available_items %}
+				{% for item in items %}
 					<tr>
-						<td>{{ available_item[1] }}</td>
-						<td>{{ available_item[2] }}</td>
+						<td>{{ item[1] }}</td>
+						<td>{{ item[2] }}</td>
+						<td>{{ item[3] }}</td>
 					</tr>
 				{% endfor %}
 			</tbody>
 		</table>
 	</form>
 	{% else %}
-		<p> No items currently available for rent. </p>
+		<p> No items currently for rent. </p>
 	{% endif %}
 </body>
 </html>

@@ -8,7 +8,8 @@ def initialise_database():
             CREATE TABLE IF NOT EXISTS items(
                 item_id INTEGER PRIMARY KEY AUTOINCREMENT,
                 item_name TEXT,
-                item_description TEXT
+                item_description TEXT,
+                item_availability TEXT
             )
             """
     )
