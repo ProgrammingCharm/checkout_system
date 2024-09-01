@@ -5,11 +5,11 @@
 </head>
 <body>
 	<div>
-		<a href="{{ url_for('view_items_page') }}">View Items</a>
-		<a href="{{ url_for('view_register_item_page') }}">Register Items</a>
-		<a href="{{ url_for('about_page') }}">About</a>
+		<a href="{{ url_for("view_items_page") }}">View Catalog</a>
+		<a href="{{ url_for("view_register_items_page") }}">Register Items</a>
+		<a href="{{ url_for("view_account_page") }}">Account</a>
 	</div>
-	<h1>Register Item Manually</h1>
+	<h3>Register Item Manually</h3>
 	<form method="POST" action="/add_item_manually">
 		<label for="item_name">Item Name:</label>
 		<input type="text" id="item_name" name="item_name">
@@ -17,7 +17,7 @@
 		<input type="text" id="item_description" name="item_description">
 		<input type="submit" value="Add Item">
 	</form>
-	<h1>Register Multiple Items via CSV</h1>
+	<h3>Register Multiple Items via CSV</h3>
 	<p>Step 1: Download the template csv below. For each item, enter a name and description.</p>
 	<a href="{{ url_for("download_template") }}">Download Template CSV</a>
 	<p>Step 2: Ensure your populated table is a csv file, then upload here.</label>

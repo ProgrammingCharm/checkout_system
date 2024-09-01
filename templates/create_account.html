@@ -1,0 +1,39 @@
+<!DOCTYPE>
+<html>
+<head>
+	<title> Create Account </title>
+</head>
+<body>
+	<div>
+		<a href="{{ url_for('index') }}">Back to Login</a>
+	</div>
+	<h2> Create Account </h2>
+	<form method="POST" action="/create_account">
+		<label for="username">Username:</label>
+		<input type="text" id="username" name="username">
+		<label for="password">Password:</label>
+		<input type="text" id="password" name="password">
+		<label for="email">Email:</label>
+		<input type="text" id="email" name="email">
+		<input type="submit" value="Create Account">
+	</form>
+	<h3> Sign-up Guidelines </h3>
+	<i>Your email is collected to notice you of upcoming holds and pertinent information about your account. Your internet protocal address is collected to ensure secure integrity during login.</i><br> 
+	<i>Usernames and passwords must adhere to the following guidelines.</i>
+	<ul>
+		<li>Username must be between 8 and 15 characters.</li>
+		<li>Password must be between 8 and 15 characters and contain at least one upper case letter, one lower case letter, one number, and one special character from #, $, %, @.</li>
+	</ul>
+	<i> If a submitted password does not meet the above criteria, you will be provided with a specific fix or a list of fixes for your next submission.</i>
+	{% if errors %}
+		<div class="error-messages">
+			<ul>
+			{% for error in errors %}
+				<li>{{ error }}</li>
+			{% endfor %}
+			</ul>
+		</div>
+	{% endif %}
+
+</html>
+

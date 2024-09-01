@@ -2,55 +2,36 @@
 <html>
 <head>
 	<title> Checkout System </title>
-	<style>
-		table {
-			width: 100%;
-			border-collapse: border;
-		}
-		table, th, td {
-			border: 1 px, solid black;
-		}
-		th, td {
-			padding: 10 px;
-			text-align: left;
-			word-wrap: break-word;
-			overflow-wrap: break-word;
-		}
-		td {
-			background-color: #f2f2f2;
-		}
-	</style>
 </head>
-<body> 
-	<div> 
-		<a href="{{ url_for('view_items_page') }}">View Items</a>
-		<a href="{{ url_for('view_register_item_page') }}">Register Items</a>
-		<a href="{{ url_for('about_page') }}">About</a>
-	</div>
+<body>
 	<div>
-	<h1> Items </h1>
-	{% if items %}
-	<form method="POST" action="/">
-		<table>
-			<thead>
-				<th>Item</th>
-				<th>Description</th>
-				<th>Availability</th>
-			</thead>
-			<tbody>
-				{% for item in items %}
-					<tr>
-						<td>{{ item[1] }}</td>
-						<td>{{ item[2] }}</td>
-						<td>{{ item[3] }}</td>
-					</tr>
-				{% endfor %}
-			</tbody>
-		</table>
+		<a href="{{ url_for("view_items_page") }}">View Catalog</a>
+		<a href="{{ url_for("view_register_items_page") }}">Register Items</a>
+	</div>
+	<h2> Login </h2>
+	<form method="POST" action="/login">
+		<label for="username">Username:</label>
+		<input type="text" id="username" name="username">
+		<label for="password">Password:</label>
+		<input type="text" id="password" name="password">
+		<input type="submit" value="Login">
 	</form>
-	{% else %}
-		<p> No items currently for rent. </p>
+	
+	{% if errors %}
+	<ul>
+		{% for error in errors %}
+			<li>{{ error }}</li>
+		{% endfor %}
+	</ul>
 	{% endif %}
+
+	<p> Don't have an account? </p>
+	<a href="{{ url_for("view_create_account_page") }}">Create Account</a>
+
+	<h3> About the Check-out System </h3>
+		<p> The checkout system is a catalog of items that a community of users can use to share, donate, and rent different items among one another. </p> 
+	<h3> User Agreement </h3>
+		<p><i> The checkout system is developed and owned by Jonah Gates. The modification or distribution of the tool without permission is prohibitied. </i></p>
 </body>
 </html>
 

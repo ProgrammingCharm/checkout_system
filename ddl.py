@@ -19,9 +19,9 @@ def initialise_database():
             CREATE TABLE IF NOT EXISTS users(
                 user_id INTEGER PRIMARY KEY AUTOINCREMENT,
                 user_name TEXT,
+                user_password TEXT,
                 user_contact TEXT, 
-                user_ipaddress TEXT,
-                user_macaddress TEXT
+                user_ipaddress TEXT
             )
             """
     )

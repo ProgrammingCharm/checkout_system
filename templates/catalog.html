@@ -1,0 +1,56 @@
+<!DOCTYPE>
+<html>
+<head>
+	<title> Checkout System </title>
+	<style>
+		table {
+			width: 100%;
+			border-collapse: border;
+		}
+		table, th, td {
+			border: 1 px, solid black;
+		}
+		th, td {
+			padding: 10 px;
+			text-align: left;
+			word-wrap: break-word;
+			overflow-wrap: break-word;
+		}
+		td {
+			background-color: #f2f2f2;
+		}
+	</style>
+</head>
+<body> 
+	<div> 
+		<a href="{{ url_for("view_items_page") }}">View Catalog</a>
+		<a href="{{ url_for("view_register_items_page") }}">Register Items</a>
+		<a href="{{ url_for("view_account_page") }}">Account</a>
+	</div>
+	<div>
+	<h3> Items </h3>
+	{% if items %}
+	<form method="POST" action="/">
+		<table>
+			<thead>
+				<th>Item</th>
+				<th>Description</th>
+				<th>Availability</th>
+			</thead>
+			<tbody>
+				{% for item in items %}
+					<tr>
+						<td>{{ item[1] }}</td>
+						<td>{{ item[2] }}</td>
+						<td>{{ item[3] }}</td>
+					</tr>
+				{% endfor %}
+			</tbody>
+		</table>
+	</form>
+	{% else %}
+		<p> No items currently for rent. </p>
+	{% endif %}
+</body>
+</html>
+
