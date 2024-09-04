@@ -81,21 +81,26 @@ def check_special(s):
     return has_special
 
 def validate_email(s):
-    # Validates email by ensuring it belongs to one of the main email providers and includes and '@' symbol."
-    email_providers = {"gmail.com", "icloud.com", "outlook.com", "hotmail.com", "aol.com", "yahoo.com", "mail.com"}
-    at_symbol_present = False
+    # Simplified email check for a signle character. If the email string contains "@", it is a valid email address. 
     for char in s:
         if char == "@":
-            at_symbol_present = True
-    if at_symbol_present == False:
-        return False
-    local_part, _, domain_part = s.partition("@")
-    char_count_local = count_characters(local_part)
-    char_count_domain = count_characters(domain_part)
-    if char_count_local == 0 or char_count_domain == 0:
-        return False
-    if domain_part in email_providers:  # Check to see if the email domain is in the set of providers.
-        return True
+            return True
+    return False
+    # Validates email by ensuring it belongs to one of the main email providers and includes and '@' symbol."
+    #email_providers = {"gmail.com", "icloud.com", "outlook.com", "hotmail.com", "aol.com", "yahoo.com", "mail.com"}
+    #at_symbol_present = False
+    #for char in s:
+    #    if char == "@":
+    #        at_symbol_present = True
+    #if at_symbol_present == False:
+    #    return False
+    #local_part, _, domain_part = s.partition("@")
+    #char_count_local = count_characters(local_part)
+    #char_count_domain = count_characters(domain_part)
+    #if char_count_local == 0 or char_count_domain == 0:
+    #    return False
+    #if domain_part in email_providers:  # Check to see if the email domain is in the set of providers.
+    #    return True
 
 
 def get_password_by_username(username):

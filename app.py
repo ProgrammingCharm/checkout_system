@@ -11,18 +11,24 @@ app = Flask(__name__, template_folder="templates")
 
 @app.route("/", methods=['GET'])
 def index():
-    return render_template('index.html')
+    errors = {
+            "err": None
+            }
+    return render_template('index.html', errors=errors)
 
 @app.route("/login", methods=["POST"])
 def login():
     username = request.form["username"]
     password = request.form["password"]
-    errors = []
+    errors = {
+            "err": None
+            }
+
     db_password = get_password_by_username(username)
     if db_password and db_password[0] == password:
         return render_template("account.html", username=username, password=password)
     else:
-        errors.append("Invalid username or password.")
+        errors["err"] = "Invalid username or password."
         return render_template("index.html", errors=errors)
 
 @app.route("/view_account_page", methods=["GET"])
@@ -47,28 +53,43 @@ def create_account():
     has_valid_email = validate_email(email)
 
     # Create errors list to be passed to render_template for on-page viewing.
-    errors = []
+    #errors = []
 
-    if (username_length < 8 or username_length > 15) and (password_length < 8 or password_length > 15):
-        errors.append("Username and password must be between 8 and 15 characters.")
+    # Create errors dictionary to contain a value for a specific error, "key": value pairs. 
+    errors = {"username": None,
+            "password": None,
+            "email": None
+    }
+
     if username_length < 8 or username_length > 15:
-        errors.append("Username must be between 8 and 15 characters.")
-    if password_length < 8 or password_length > 15:
-        errors.append("Password must be between 8 and 15 characters.")
-    if not has_upper or not has_lower or not has_number or not has_special:
-        errors.append("Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character from #, $, %, &, ?, @.")
-    if not has_valid_email:
-        errors.append("Email must be valid coming from one of the common email providers such as gmail.com, icloud.com, outlook.com, hotmail.com, aol.com, yahoo.com, or mail.com.")
-    
-    if errors:
-        return render_template("create_account.html", errors=errors)
+        errors["username"] = "Username must be between 8 and 15 characters."
 
-    add_user(username, password, email, ipaddress)
-    return index()
+    if password_length < 8 or password_length > 15 or not has_upper or not has_lower or not has_number or not has_special:
+        errors["password"] = "Password must be between 8 and 15 characters, one upper case letter, one lower case letter, one number, and one special character from #, $, %, &, ?, @."
+    
+    if not has_valid_email:
+        errors["email"] = "Invalid email address."
+
+    #if (username_length < 8 or username_length > 15) and (password_length < 8 or password_length > 15):
+        #errors.append("Username and password must be between 8 and 15 characters.")
+    #if username_length < 8 or username_length > 15:
+        #errors.append("Username must be between 8 and 15 characters.")
+    #if password_length < 8 or password_length > 15:
+        #errors.append("Password must be between 8 and 15 characters.")
+    #if not has_upper or not has_lower or not has_number or not has_special:
+        #errors.append("Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character from #, $, %, &, ?, @.")
+    #if not has_valid_email:
+        #errors.append("Email must be valid coming from one of the common email providers such as gmail.com, icloud.com, outlook.com, hotmail.com, aol.com, yahoo.com, or mail.com.")
+    print(errors)
+    if all(value is None for value in errors.values()):
+        add_user(username, password, email, ipaddress)
+        return index()
+    else:
+        return render_template("create_account.html", errors=errors)
 
 @app.route("/view_create_account_page", methods=["GET"])
 def view_create_account_page():
-    return render_template("create_account.html")
+    return render_template("create_account.html", errors=None)
 
 @app.route("/view_items_page", methods=["GET"])
 def view_items_page():
@@ -97,11 +118,16 @@ def download_template():
 #For uploading populated csv, should start at index 1 skipping first row. 
 @app.route("/upload_csv", methods=["POST"])
 def upload_csv():
+        errors = {
+                "err": None
+                }
         if "file" not in request.files:
-            return "No file part in form.", 400
+            errors["err"] = "No file part."
+            return render_template("register.html", errors=errors)
         file = request.files["file"]
         if file.filename == '':
-            return "No selected file.", 400
+            errors["err"] = "No selected file."
+            return render_template("register.html", errors=errors)
         if file and file.filename.endswith(".csv"):
             file_data = file.stream.read().decode().splitlines()
             rows = csv.reader(file_data)

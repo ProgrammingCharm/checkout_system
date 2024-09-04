@@ -2,6 +2,12 @@
 <html>
 <head>
 	<title> Create Account </title>
+	<style>
+		.error {
+			color: red;
+			font-size: 0.8em;
+		}
+	</style>
 </head>
 <body>
 	<div>
@@ -10,20 +16,35 @@
 	<h2> Create Account </h2>
 	<form method="POST" action="/create_account">
 		<label for="username">Username:</label>
-		<input type="text" id="username" name="username">
+		<input type="text" id="username" name="username" value="{{ request.form["username"] }}">
+		{% if errors.username %}
+			<div class="error">{{ errors.username }}</div>
+		{% endif %}
+		
 		<label for="password">Password:</label>
-		<input type="text" id="password" name="password">
+		<input type="text" id="password" name="password" value="{{ request.form["password"] }}">
+		{% if errors.password %}
+			<div class="error">{{ errors.password }}</div>
+		{% endif %}
+		
 		<label for="email">Email:</label>
-		<input type="text" id="email" name="email">
+		<input type="text" id="email" name="email" value="{{ request.form["email"] }}">
+		{% if errors.email %}
+			<div class="error">{{ errors.email }}</div>
+		{% endif %}
+		
 		<input type="submit" value="Create Account">
 	</form>
 	<h3> Sign-up Guidelines </h3>
 	<i>Your email is collected to notice you of upcoming holds and pertinent information about your account. Your internet protocal address is collected to ensure secure integrity during login.</i><br> 
 	<i>Usernames and passwords must adhere to the following guidelines.</i>
+	<i>Upon successful account creation you will be directed back to the login page.<i>
 	<ul>
 		<li>Username must be between 8 and 15 characters.</li>
 		<li>Password must be between 8 and 15 characters and contain at least one upper case letter, one lower case letter, one number, and one special character from #, $, %, @.</li>
 	</ul>
+
+	<!-- 
 	<i> If a submitted password does not meet the above criteria, you will be provided with a specific fix or a list of fixes for your next submission.</i>
 	{% if errors %}
 		<div class="error-messages">
@@ -33,7 +54,8 @@
 			{% endfor %}
 			</ul>
 		</div>
-	{% endif %}
+	{% endif %} 
+	-->
 
-</html>
+</html> 
 
