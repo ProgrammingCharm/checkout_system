@@ -1,5 +1,6 @@
 import sqlite3
 from flask import request
+from werkzeug.security import generate_password_hash
 
 def get_all_items():
     conn = sqlite3.connect("checkout_system.db")
@@ -22,13 +23,14 @@ def add_item(item_name, item_description, item_availability):
     conn.close()
 
 def add_user(username, password, email, ipaddress):
+    hashed_password = generate_password_hash(password)  # Using PBKDF2 with SHA256 for generating hash. 
     conn = sqlite3.connect("checkout_system.db")
     cursor = conn.cursor()
     cursor.execute(
             """
             INSERT INTO users (user_name, user_password, user_contact, user_ipaddress) VALUES (?, ?, ?, ?)
             """, 
-            (username, password, email, ipaddress)
+            (username, hashed_password, email, ipaddress)
     )
     conn.commit()
     conn.close()
@@ -117,53 +119,3 @@ def get_password_by_username(username):
     password = cursor.fetchone()
     conn.close()
     return password
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

@@ -3,6 +3,7 @@ from flask import Flask, render_template, request, send_file
 from os import path
 from ddl import initialise_database
 from dml import get_all_items, add_item, add_user, get_ipaddress, count_characters, check_upper, check_lower, check_number, check_special, validate_email, get_password_by_username
+from werkzeug.security import generate_password_hash, check_password_hash
 
 if not path.exists("checkout_system.db"):
     initialise_database()
@@ -25,7 +26,7 @@ def login():
             }
 
     db_password = get_password_by_username(username)
-    if db_password and db_password[0] == password:
+    if db_password and check_password_hash(db_password[0], password):
         return render_template("account.html", username=username, password=password)
     else:
         errors["err"] = "Invalid username or password."
@@ -97,14 +98,25 @@ def view_items_page():
 
 @app.route("/view_register_items_page", methods=["GET"])
 def view_register_items_page():
-    return render_template('register.html')
+    errors = {
+            "manual_item_error": None,
+            "csv_error": None
+    }
+    return render_template('register.html', errors=errors)
 
 @app.route("/add_item_manually", methods=["GET", "POST"])
 def add_item_manually():
+    errors = {
+            "manual_item_error": None,
+            "csv_error": None
+    }
     item_name = request.form['item_name']
     item_description = request.form['item_description']
+    if not item_name or not item_description:
+        errors["manual_item_error"] = "Both item name and item description required."
+        return render_template('register.html', errors=errors)
     add_item(item_name, item_description, item_availability="Available")
-    return render_template('register.html')
+    return render_template('register.html', errors=errors)
 
 # For downloading csv file when user accesses URL /download_template, server listens for GET HTTP requests. 
 @app.route("/download_template", methods=["GET"])
@@ -119,14 +131,15 @@ def download_template():
 @app.route("/upload_csv", methods=["POST"])
 def upload_csv():
         errors = {
-                "err": None
+                "manual_item_error": None,
+                "csv_error": None
                 }
         if "file" not in request.files:
-            errors["err"] = "No file part."
+            errors["csv_error"] = "No file part."
             return render_template("register.html", errors=errors)
         file = request.files["file"]
         if file.filename == '':
-            errors["err"] = "No selected file."
+            errors["csv_error"] = "No selected file."
             return render_template("register.html", errors=errors)
         if file and file.filename.endswith(".csv"):
             file_data = file.stream.read().decode().splitlines()
@@ -146,6 +159,3 @@ def upload_csv():
         
 if __name__ == '__main__':
     app.run(debug=True)
-
-
-

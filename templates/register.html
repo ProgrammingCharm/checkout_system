@@ -21,6 +21,9 @@
 		<label for="item_description">Item Description:</label>
 		<input type="text" id="item_description" name="item_description">
 		<input type="submit" value="Add Item">
+		{% if errors.manual_item_error %}
+			<div class="error">{{ errors.manual_item_error }}</div>
+		{% endif %}
 	</form>
 	<h3>Register Multiple Items via CSV</h3>
 	<p>Step 1: Download the template csv below. For each item, enter a name and description.</p>
@@ -30,8 +33,8 @@
 		<label for="file"></label>
 		<input type="file" id="file" name="file">
 		<input type="submit" value="Upload CSV">
-		{% if errors.err %}
-			<div class="error">{{ errors.err }}</div>
+		{% if errors.csv_error %}
+			<div class="error">{{ errors.csv_error }}</div>
 		{% endif %}
 	</form>
 </body>
