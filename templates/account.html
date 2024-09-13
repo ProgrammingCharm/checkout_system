@@ -2,11 +2,53 @@
 <html>
 <head>
 	<title>Account</title>
+	<style>
+		table {
+			width: 75%;
+			border-collapse: border;
+		}
+		table, th, td {
+			border: 1 px, solid black;
+		}
+		th, td {
+			padding: 10 px;
+			text-allign: left;
+			word-wrap: word-break;
+			overflow-wrap: word-break;
+		}
+		td {
+			background-color: #f2f2f2;
+		}
+	</style>
 </head>
 <body>
+	<div>
+		<a href="{{ url_for("logout") }}">Logout</a>
+	</div>
 	<h3>Account Dashboard {{username}} </h3>
 	<p>Click <a href="{{ url_for("view_items_page") }}">View Catalog</a> to begin renting items.<p>
 	<p>Click <a href="{{ url_for("view_register_items_page") }}">Register Items</a> to add items to the collection for others to rent.</p> 
+	<h4>Items Checked Out</h4>
+	{% if checked_out_items %}
+	<table>
+		<thead>
+			<th>Item</th>
+			<th>Checkout Date</th>
+			<th>Return Date</th>
+		</thead>
+		<tbody>
+			{% for checked_out_item in checked_out_items %}
+				<tr>
+					<td>{{ checked_out_item[3] }}</td>
+					<td>{{ checked_out_item[4] }}</td>
+					<td>{{ checked_out_item[5] }}</td>
+				</tr>
+			{% endfor %}
+		</tbody>
+	</table>
+	{% else %}
+		<p>You currently have no items checked out.</p>
+	{% endif %}
 </body>
 </head>
 </html>

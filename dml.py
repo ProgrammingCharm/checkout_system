@@ -1,11 +1,12 @@
 import sqlite3
+import time
 from flask import request
 from werkzeug.security import generate_password_hash
 
 def get_all_items():
     conn = sqlite3.connect("checkout_system.db")
     cursor = conn.cursor()
-    cursor.execute("SELECT * FROM items")
+    cursor.execute("SELECT * FROM items WHERE item_availability == 'Available'")
     items = cursor.fetchall()
     conn.close()
     return items
@@ -119,3 +120,72 @@ def get_password_by_username(username):
     password = cursor.fetchone()
     conn.close()
     return password
+
+def get_user_id_by_username(username):
+    conn = sqlite3.connect("checkout_system.db")
+    cursor = conn.cursor()
+    cursor.execute(
+            """
+            SELECT user_id FROM users WHERE user_name = ?
+            """,
+            (username,)
+    )
+    username_id = cursor.fetchone()
+    conn.commit()
+    conn.close()
+    return username_id
+
+def get_item_name_by_item_id(item_id):
+    conn = sqlite3.connect("checkout_system.db")
+    cursor = conn.cursor()
+    cursor.execute(
+            """
+            SELECT item_name FROM items WHERE item_id = ?
+            """,
+            (item_id,)
+    )
+    item_name = cursor.fetchone()
+    conn.commit()
+    conn.close()
+    return item_name
+
+def add_checkout(user_id, item_id, item_name, checkout_date, return_date):
+    conn = sqlite3.connect("checkout_system.db")
+    cursor = conn.cursor()
+    cursor.execute(
+            """
+            INSERT INTO checkouts (user_id, item_id, item_name, checkout_date, return_date) VALUES (?, ?, ?, ?, ?)
+            """,
+            (user_id, item_id, item_name, checkout_date, return_date)
+    )
+    conn.commit()
+    conn.close()
+
+def get_all_checked_out_items(user_id):
+    conn = sqlite3.connect("checkout_system.db")
+    cursor = conn.cursor()
+    cursor.execute(
+            """
+            SELECT * FROM checkouts WHERE user_id = ?
+            """,
+            (user_id,)
+    )
+    checked_out_items = cursor.fetchall()
+    conn.close()
+    return checked_out_items
+
+def update_item_availability(item_id):
+    conn = sqlite3.connect("checkout_system.db")
+    cursor = conn.cursor()
+    cursor.execute(
+            """
+            UPDATE items SET item_availability='Unavailable' WHERE item_id = ?
+            """,
+            (item_id,)
+    )
+    conn.commit()
+    conn.close()
+
+def get_timestamp():
+    current_time = time.localtime()
+    return time.strftime('%Y-%m-%d %H:%M:%S', current_time)

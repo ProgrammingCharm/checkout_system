@@ -7,12 +7,17 @@
 			color: red;
 			font-size: 0.8em;
 		}
+		.success {
+			color: green;
+			font-size: 0.8em;
+		}
 	</style>
 </head>
 <body>
 	<div>
 		<a href="{{ url_for("view_items_page") }}">View Catalog</a>
 		<a href="{{ url_for("view_account_page") }}">Account</a>
+		<a href="{{ url_for("logout") }}">Logout</a>
 	</div>
 	<h3>Register Item Manually</h3>
 	<form method="POST" action="/add_item_manually">
@@ -23,6 +28,9 @@
 		<input type="submit" value="Add Item">
 		{% if errors.manual_item_error %}
 			<div class="error">{{ errors.manual_item_error }}</div>
+		{% endif %}
+		{% if success_note.add %}
+			<div class="success">{{ success_note.add }}</div>
 		{% endif %}
 	</form>
 	<h3>Register Multiple Items via CSV</h3>

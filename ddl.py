@@ -26,5 +26,20 @@ def initialise_database():
             """
     )
     conn.commit()
+    cursor.execute(
+            """
+            CREATE TABLE IF NOT EXISTS checkouts(
+                checkout_id INTEGER PRIMARY KEY AUTOINCREMENT,
+                user_id INTEGER,
+                item_id INTEGER,
+                item_name TEXT,
+                checkout_date TEXT,
+                return_date TEXT,
+                FOREIGN KEY(user_id) REFERENCES users(user_id),
+                FOREIGN KEY(item_id) REFERENCES items(item_id)
+            )
+            """
+    )
+    conn.commit()
     conn.close()
     
