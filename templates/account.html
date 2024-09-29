@@ -35,15 +35,22 @@
 			<th>Item</th>
 			<th>Checkout Date</th>
 			<th>Return Date</th>
+			<th>Check-in Item</th>
 		</thead>
 		<tbody>
-			{% for checked_out_item in checked_out_items %}
-				<tr>
-					<td>{{ checked_out_item[3] }}</td>
-					<td>{{ checked_out_item[4] }}</td>
-					<td>{{ checked_out_item[5] }}</td>
-				</tr>
-			{% endfor %}
+			<form method="POST" action="/checkin_item">
+				{% for checked_out_item in checked_out_items %}
+					<tr>
+						<td>{{ checked_out_item[3] }}</td>
+						<td>{{ checked_out_item[4] }}</td>
+						<td>{{ checked_out_item[5] }}</td>
+						<td>
+							<input type="checkbox" name="item_ids" value="{{ checked_out_item[2] }}">
+							<button type="submit">Check-in</button>
+						</td>
+					</tr>
+				{% endfor %}
+				</form>
 		</tbody>
 	</table>
 	{% else %}

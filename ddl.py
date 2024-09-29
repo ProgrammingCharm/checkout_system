@@ -9,7 +9,8 @@ def initialise_database():
                 item_id INTEGER PRIMARY KEY AUTOINCREMENT,
                 item_name TEXT,
                 item_description TEXT,
-                item_availability TEXT
+                item_availability TEXT,
+                item_category TEXT
             )
             """
     )

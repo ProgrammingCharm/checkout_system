@@ -22,7 +22,7 @@
 		{% endif %}
 		
 		<label for="password">Password:</label>
-		<input type="text" id="password" name="password" value="{{ request.form["password"] }}">
+		<input type="password" id="password" name="password" value="{{ request.form["password"] }}">
 		{% if errors.password %}
 			<div class="error">{{ errors.password }}</div>
 		{% endif %}

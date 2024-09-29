@@ -3,7 +3,7 @@ from flask import Flask, render_template, request, send_file, session, redirect,
 from os import path
 import os
 from ddl import initialise_database
-from dml import get_all_items, add_item, add_user, get_ipaddress, count_characters, check_upper, check_lower, check_number, check_special, validate_email, get_password_by_username, get_user_id_by_username, add_checkout, get_all_checked_out_items, update_item_availability, get_item_name_by_item_id, get_timestamp
+from dml import get_all_items, add_item, add_user, get_ipaddress, count_characters, check_upper, check_lower, check_number, check_special, validate_email, get_password_by_username, get_user_id_by_username, add_checkout, get_all_checked_out_items, update_item_availability, get_item_name_by_item_id, get_timestamp, check_in_item, get_items_by_category
 from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import datetime, timedelta
 import time
@@ -87,11 +87,18 @@ def view_create_account_page():
 
 @app.route("/view_items_page", methods=["GET"])
 def view_items_page():
+    success_note = {
+            "checkout": None
+    }
+    selected_category = request.args.get('category', 'All Items')
+    items = get_items_by_category(selected_category)
+    if "checkout_success" in session:
+        success_note["checkout"] = session.pop("checkout_success")
     if "username" in session:
         username = session["username"]
-        return render_template("catalog.html", items=get_all_items(), username=username)
+        return render_template("catalog.html", items=items, username=username, selected_category=selected_category, success_note=success_note)
     else:
-        return redirect(url_for("index"))
+        return index()
 
 @app.route("/view_register_items_page", methods=["GET"])
 def view_register_items_page():
@@ -114,11 +121,12 @@ def add_item_manually():
     }
     item_name = request.form['item_name']
     item_description = request.form['item_description']
-    if not item_name or not item_description:
-        errors["manual_item_error"] = "Both item name and item description required."
+    item_category = request.form['item_category']
+    if not item_name or not item_description or not item_category:
+        errors["manual_item_error"] = "Item name, item description, and item category required."
         return render_template('register.html', errors=errors, success_note=success_note)
     success_note["add"] = "Item added successfully."
-    add_item(item_name, item_description, item_availability="Available")
+    add_item(item_name, item_description, item_availability="Available", item_category=item_category)
     return render_template('register.html', errors=errors, success_note=success_note)
 
 # For downloading csv file when user accesses URL /download_template, server listens for GET HTTP requests. 
@@ -127,7 +135,7 @@ def download_template():
     csv_file = "items.csv"
     with open(csv_file, mode='w', newline='') as file:
         writer = csv.writer(file)
-        writer.writerow(['item_name', 'item_description'])
+        writer.writerow(['item_name', 'item_description', 'item_category'])
     return send_file(csv_file)
 
 #For uploading populated csv, should start at index 1 skipping first row. 
@@ -150,34 +158,47 @@ def upload_csv():
             # Effectively skipping the first row which is a header for the table
             next(rows)
             for row in rows:
-                if len(row) < 2:
+                if len(row) < 3:
                     continue
                 item_name = row[0]
                 item_description = row[1]
-                add_item(item_name, item_description, item_availability="Available")
+                item_category = row[2]
+                add_item(item_name, item_description, item_availability="Available", item_category=item_category)
             return view_items_page()    
         return view_register_item_page()
 
 @app.route("/checkout_item", methods=["POST"])
 def checkout_item():
+    selected_category = request.args.get('category', 'All Items')
+    items = get_items_by_category(selected_category)
     if "username" not in session:
         return index()
     username = session["username"]
     user_id = get_user_id_by_username(session["username"])[0]
     item_id = int(request.form["item_id"])
-    print(f"Item id is: {item_id}")
     item_name_tuple = get_item_name_by_item_id(item_id)
     item_name = item_name_tuple[0]
-    print(f"Item name is: {item_name}")
     checkout_date = get_timestamp()
     return_date = datetime.now() + timedelta(days=7)
     #due_in_days = (return_date - datetime.now()).days
     return_date_str = return_date.strftime('%Y-%m-%d %H:%M:%S')
     #return_date_str = f"Due in {due_in_days} days by 11:59pm."
     add_checkout(user_id, item_id, item_name, checkout_date, return_date_str)
-    checked_out_items = get_all_checked_out_items(user_id)
     update_item_availability(item_id)
-    return render_template("account.html", username=username, checked_out_items=checked_out_items)
+    session["checkout_success"] = "Item checked out successfully."
+    return redirect(url_for("view_items_page", category=selected_category))
+
+@app.route("/checkin_item", methods=["POST"])
+def checkin_item():
+    if "username" not in session:
+        return index()
+    user_id = get_user_id_by_username(session["username"])[0]
+    item_ids = request.form.getlist("item_ids")
+    if item_ids:
+        for item_id in item_ids:
+            check_in_item(user_id, item_id)
+    return view_account_page()
+
 
 if __name__ == '__main__':
     app.run(debug=True)

@@ -25,6 +25,14 @@
 		<input type="text" id="item_name" name="item_name">
 		<label for="item_description">Item Description:</label>
 		<input type="text" id="item_description" name="item_description">
+		<label for="item_category">Item Category:</label>
+		<select id="item_category" name="item_category">
+			<option value="Tools">Tools</option>
+			<option value="Transportation">Transportation</option>
+			<option value="Household">Household</option>
+			<option value="Entertainment">Entertainment</option>
+			<option value="Clothing">Clothing</option>
+		</select>
 		<input type="submit" value="Add Item">
 		{% if errors.manual_item_error %}
 			<div class="error">{{ errors.manual_item_error }}</div>

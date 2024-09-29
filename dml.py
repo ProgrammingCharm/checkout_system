@@ -6,19 +6,19 @@ from werkzeug.security import generate_password_hash
 def get_all_items():
     conn = sqlite3.connect("checkout_system.db")
     cursor = conn.cursor()
-    cursor.execute("SELECT * FROM items WHERE item_availability == 'Available'")
+    cursor.execute("SELECT * FROM items") # Changed to all items in general
     items = cursor.fetchall()
     conn.close()
     return items
 
-def add_item(item_name, item_description, item_availability):
+def add_item(item_name, item_description, item_availability, item_category):
     conn = sqlite3.connect("checkout_system.db")
     cursor = conn.cursor()
     cursor.execute(
             """
-            INSERT INTO items (item_name, item_description, item_availability) VALUES (?, ?, ?)
+            INSERT INTO items (item_name, item_description, item_availability, item_category) VALUES (?, ?, ?, ?)
             """,
-            (item_name, item_description, item_availability)
+            (item_name, item_description, item_availability, item_category)
     )
     conn.commit()
     conn.close()
@@ -189,3 +189,32 @@ def update_item_availability(item_id):
 def get_timestamp():
     current_time = time.localtime()
     return time.strftime('%Y-%m-%d %H:%M:%S', current_time)
+
+def check_in_item(user_id, item_id):
+    conn = sqlite3.connect("checkout_system.db")
+    cursor = conn.cursor()
+    cursor.execute(
+            """
+            DELETE FROM checkouts WHERE user_id = ? AND item_id = ?
+            """,
+            (user_id, item_id)
+    )
+    cursor.execute(
+            """
+            UPDATE items SET item_availability = "Available" WHERE item_id = ?
+            """,
+            (item_id,)
+    )
+    conn.commit()
+    conn.close()
+
+def get_items_by_category(category):
+    conn = sqlite3.connect("checkout_system.db")
+    cursor = conn.cursor()
+    if category == "All Items":
+        cursor.execute("SELECT * FROM items") # Retrieve all items, not specific
+    else:
+        cursor.execute("SELECT * FROM items WHERE item_category = ?", (category,))
+    items = cursor.fetchall()
+    conn.close()
+    return items
