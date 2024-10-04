@@ -180,11 +180,10 @@ def checkout_item():
     item_name = item_name_tuple[0]
     checkout_date = get_timestamp()
     return_date = datetime.now() + timedelta(days=7)
-    #due_in_days = (return_date - datetime.now()).days
+    return_date = return_date.replace(hour=0, minute=0, microsecond=0) # Set to midnight
     return_date_str = return_date.strftime('%Y-%m-%d %H:%M:%S')
-    #return_date_str = f"Due in {due_in_days} days by 11:59pm."
+    update_item_availability(item_id, return_date_str)
     add_checkout(user_id, item_id, item_name, checkout_date, return_date_str)
-    update_item_availability(item_id)
     session["checkout_success"] = "Item checked out successfully."
     return redirect(url_for("view_items_page", category=selected_category))
 

@@ -73,7 +73,7 @@
 									<button type="submit">Checkout</button>
 								</form>
 							{% else %}
-								<span>Unavailable</span>
+							<span>Unavailable (Available on {{ item[5][:10] }} at 23:59:59)</span>
 							{% endif %}		
 						</td>
 					</tr>

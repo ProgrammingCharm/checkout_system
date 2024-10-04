@@ -10,7 +10,8 @@ def initialise_database():
                 item_name TEXT,
                 item_description TEXT,
                 item_availability TEXT,
-                item_category TEXT
+                item_category TEXT,
+                return_date TEXT DEFAULT NULL
             )
             """
     )

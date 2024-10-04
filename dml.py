@@ -174,14 +174,14 @@ def get_all_checked_out_items(user_id):
     conn.close()
     return checked_out_items
 
-def update_item_availability(item_id):
+def update_item_availability(item_id, return_date_str):
     conn = sqlite3.connect("checkout_system.db")
     cursor = conn.cursor()
     cursor.execute(
             """
-            UPDATE items SET item_availability='Unavailable' WHERE item_id = ?
+            UPDATE items SET item_availability='Unavailable', return_date=? WHERE item_id = ?
             """,
-            (item_id,)
+            (return_date_str, item_id)
     )
     conn.commit()
     conn.close()
