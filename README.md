@@ -1,0 +1,1 @@
+Web application is currently deployed on a PythonAnywhere server for use, the application is a community-based tool that allows users to rent and register items. This web application provides a web interface for allowing users to share items within a community and is supported by a robust database system for keeping track of items.  
